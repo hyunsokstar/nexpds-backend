@@ -3,9 +3,10 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TennantModule } from './tennant/tennant.module';
 import { CampaignModule } from './campaign/campaign.module';
+import { GroupModule } from './group/group.module';
 
 @Module({
-  imports: [TennantModule, CampaignModule],
+  imports: [TennantModule, CampaignModule, GroupModule],
   controllers: [AppController],
   providers: [AppService],
 })

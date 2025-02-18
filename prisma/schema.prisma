@@ -15,10 +15,13 @@ datasource db {
 }
 
 model Tenant {
-  id          String     @id @default(uuid()) // 테넌트 ID (UUID)
-  name        String     @unique              // 테넌트 이름
-  createdAt   DateTime   @default(now())      // 생성 일자
-  campaigns   Campaign[] // 1:N 관계 (Tenant → Campaign)
+  id        String    @id @default(uuid()) 
+  name      String    @unique
+  createdAt DateTime  @default(now())
+
+  campaigns Campaign[]
+  groups    Group[]  
+  users     User[]   // 🔥 반대 관계 추가 (User → Tenant 관계 해결)
 }
 
 model Campaign {
@@ -27,4 +30,57 @@ model Campaign {
   tenantId  String   // FK (Tenant ID)
   tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now()) // 생성 일자
+}
+
+// ✅ **2. 그룹(Group): 상담 센터 내 여러 지점(예: 서울센터, 부산센터)**
+model Group {
+  id        String   @id @default(uuid())
+  name      String
+  tenantId  String
+  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  teams     Team[]   // Group → Team (1:N)
+}
+
+// ✅ **3. 팀(Team): 각 그룹 내 운영 단위(예: 심리상담팀, 법률상담팀)**
+model Team {
+  id        String   @id @default(uuid())
+  name      String
+  groupId   String
+  group     Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  counselors Counselor[] // Team → Counselor (1:N)
+}
+
+// ✅ **4. 상담사(Counselor): 상담을 수행하는 직원 (User와 연결됨)**
+model Counselor {
+  id        String   @id @default(uuid())
+  name      String
+  phone     String?
+  teamId    String
+  team      Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  userId    String   @unique  // 연결된 User ID (1:1 관계)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}
+
+// ✅ **5. 사용자(User): 상담사, 관리자 등**
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  role      Role     @default(COUNSELOR) // 상담사 기본 역할
+  tenantId  String?
+  tenant    Tenant?  @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  counselor Counselor? // 1:1 관계 (User <-> Counselor)
+  createdAt DateTime @default(now())
+}
+
+// ✅ **6. 사용자 역할(Role)**
+enum Role {
+  ADMIN       // 최고 관리자
+  MANAGER     // 센터 관리자
+  COUNSELOR   // 상담사
 }
