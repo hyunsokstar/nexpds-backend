@@ -1,3 +1,4 @@
+// C:\ohs\nexpds-backend\tsconfig.json
 {
   "compilerOptions": {
     "module": "commonjs",
@@ -18,11 +19,11 @@
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
 
-    // ✅ 추가할 부분
+    // ✅ 절대 경로 설정
     "paths": {
-      "@prisma/*": ["prisma/*"],      // ✅ Prisma 관련 경로 설정
-      "@modules/*": ["src/modules/*"], // ✅ 모듈 import 간편화
-      "@services/*": ["src/services/*"] // ✅ 서비스 import 간편화
+      "@prisma/*": ["prisma/*"],       // Prisma 관련 경로 설정
+      "@modules/*": ["src/modules/*"],  // 모듈 import 간편화
+      "@services/*": ["src/services/*"] // 서비스 import 간편화
     }
   }
 }

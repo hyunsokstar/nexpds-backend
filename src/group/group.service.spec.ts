@@ -1,26 +1,7 @@
-// import { Test, TestingModule } from '@nestjs/testing';
-// import { GroupService } from './group.service';
-
-// describe('GroupService', () => {
-//   let service: GroupService;
-
-//   beforeEach(async () => {
-//     const module: TestingModule = await Test.createTestingModule({
-//       providers: [GroupService],
-//     }).compile();
-
-//     service = module.get<GroupService>(GroupService);
-//   });
-
-//   it('should be defined', () => {
-//     expect(service).toBeDefined();
-//   });
-// });
-
 // src\group\group.service.spec.ts
 import { Test, TestingModule } from '@nestjs/testing';
 import { GroupService } from './group.service';
-import { PrismaService } from 'prisma/prisma.service';
+import { PrismaService } from '../../prisma/prisma.service';
 
 describe('GroupService', () => {
   let service: GroupService;
