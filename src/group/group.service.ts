@@ -1,17 +1,29 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
+import { CreateGroupDto } from './dto/create-group.dto';
 
 @Injectable()
 export class GroupService {
   constructor(private prisma: PrismaService) {}
 
-  // 🔹 모든 그룹 조회 (findAll → getAllGroups)
   async getAllGroups() {
-    return this.prisma.group.findMany();
+    return this.prisma.group.findMany({
+      include: {
+        teams: {
+          include: {
+            counselors: true
+          }
+        }
+      }
+    });
   }
 
-  // 🔹 새로운 그룹 생성 (create → createGroup)
-  async createGroup(data: { name: string; tenantId: string }) {
-    return this.prisma.group.create({ data });
+  async createGroup(createGroupDto: CreateGroupDto) {
+    return this.prisma.group.create({
+      data: createGroupDto,
+      include: {
+        teams: true
+      }
+    });
   }
 }

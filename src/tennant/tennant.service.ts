@@ -1,26 +1,34 @@
 import { Injectable } from '@nestjs/common';
+import { CreateTenantDto } from './dto/create-tenant.dto';
 import { PrismaService } from '../../prisma/prisma.service';
 
 @Injectable()
-export class TennantService {
-  constructor(private readonly prisma: PrismaService) {}
+export class TenantService {
+  constructor(private prisma: PrismaService) {}
 
-  // ✅ 기본 "Hello" 반환
-  getHello(): string {
-    return 'Hello from Tennant Service!';
-  }
-
-  // ✅ 모든 테넌트 가져오기
-  async getAllTennants() {
-    return await this.prisma.tenant.findMany(); // Prisma에서 모든 Tenant 조회
-  }
-
-  async getAllTennantsWithCampaigns() {
-    return await this.prisma.tenant.findMany({
-      include: {
-        campaigns: true, // ✅ 캠페인 정보 포함
-      },
+  async create(createTenantDto: CreateTenantDto) {
+    return this.prisma.tenant.create({
+      data: createTenantDto,
     });
   }
-  
+
+  async getTenantHierarchy() {
+    return this.prisma.tenant.findMany({
+      include: {
+        groups: {
+          include: {
+            teams: {
+              include: {
+                counselors: true
+              }
+            }
+          }
+        }
+      },
+      orderBy: {
+        createdAt: 'desc'
+      }
+    });
+  }
+
 }

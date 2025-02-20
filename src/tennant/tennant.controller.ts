@@ -1,26 +1,18 @@
-import { Controller, Get } from '@nestjs/common';
-import { TennantService } from './tennant.service';
+import { Controller, Post, Body, Get } from '@nestjs/common';
+import { CreateTenantDto } from './dto/create-tenant.dto';
+import { TenantService } from './tennant.service';
 
-@Controller('tennant')
-export class TennantController {
-  constructor(private readonly tennantService: TennantService) {}
+@Controller('tenant')
+export class TenantController {
+  constructor(private readonly tenantService: TenantService) {}
 
-  // ✅ 기본 "Hello" 응답
-  @Get('hello')
-  getHello(): string {
-    return this.tennantService.getHello();
+  @Post()
+  async create(@Body() createTenantDto: CreateTenantDto) {
+    return await this.tenantService.create(createTenantDto);
   }
 
-  // ✅ 모든 테넌트 가져오기 (리스트 요청)
   @Get()
-  async getAllTennants() {
-    return await this.tennantService.getAllTennants();
+  async getTenantHierarchy() {
+    return await this.tenantService.getTenantHierarchy();
   }
-
-  // ✅ 테넌트 + 캠페인 리스트 조회 API
-  @Get('with-campaigns')
-  async getAllTennantsWithCampaigns() {
-    return await this.tennantService.getAllTennantsWithCampaigns();
-  }
-
 }
